@@ -15,7 +15,7 @@ WORK IN PROGRESS, NON-FUNCTIONAL FOR NOW
 
 ### Hardware
 
-Used with the ESP6288 breakout board
+Used PCB following recommended schematic in the datasheet, operated using the ESP6288 breakout board.
 
 ### License
 
