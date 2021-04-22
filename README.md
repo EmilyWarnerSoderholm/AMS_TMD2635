@@ -2,7 +2,7 @@
 
 ### Summary
 
-WORK IN PROGRESS, NON-FUNCTIONAL FOR NOW
+WORK IN PROGRESS, CURRENTLY NON-FUNCTIONAL
 -----
 
 ### Operation
@@ -15,7 +15,9 @@ WORK IN PROGRESS, NON-FUNCTIONAL FOR NOW
 
 ### Hardware
 
-Used PCB following recommended schematic in the datasheet, operated using the ESP6288 breakout board.
+Customised PCB following recommended schematic in the datasheet 
+Master: ESP6288 D1 mini Wifi module microcontroller.
 
-### License
-
+### Special thanks to:
+Robot Electronics, UK:
+  https://www.robot-electronics.co.uk/i2c-tutorial
