@@ -22,6 +22,25 @@ TMD2635::TMD2635()
     // send some dummy address, check that device returns NACK
     SDA = SCL = 1;
     SCL_IN = SDA_IN = 0;
+       
+}
+void _init_(bool mode)
+{
+    //for far proximity, uncomment the following the code:
+    writeregadr(SOFTRST,0x01)
+    writeregadr(PERS, 0x0F)
+    writeregadr(CFG3, 0x84)
+    //setregadr(CFG0, )
+    //setregadr(CFG0, )
+    if (mode==True)
+    {
+        NearProximity()
+    }
+    else
+    {
+        //FarProximity()
+    }
+    writeregadr(ENABLE,0x05) //
 }
 void i2c_dly(void)
 {
@@ -115,13 +134,72 @@ i2c_stop();               // send stop sequence
 }
 
 
-int TMD2635::readProximity(uint8_t adr)
+int TMD2635::readProximity()
 {
+  status=readregadr(STATUS);
+  if (status>0)
+  {
+      writeregadr(ENABLE,0x05);
+      writeregadr(CFG3, 0x84);
+  }
+  uint16_t Lreading=readregadr(PDATAL);
+  uint16_t Hreading=readregadr(PDATAH); 
+    
   uint16_t proximity = 0;
-  uint8_t adr_clear =
-  uint8_t adr_set =
-  uint8_t reg = // WHICH ADDRESS?
-  uint8_t cmd = // WHICH ADDRESS?
-  return proximity = Read(adr_clear, adr_set, reg, cmd);
+  proximity=Hreading<<8; 
+  proximty+=Lreading;
+  
+  return proximity;
+} 
+
+
+ void readregadr(unit8_t reg)
+ {
+     Wire.beginTransmission(ADDRESS);
+     Wire.write(reg);
+     Wire.endTransmission();
+     Wire.requestFrom(ADDRESS, 1); // We want one byte
+     uint8_t val = Wire.read();
+    return val;
+ }
+        
+ void TMD2635::writeregadr(unit8_t reg, uint8_t val)
+ {
+   Wire.beginTransmission();
+   Wire.write(reg);
+   Wire.write(val);
+   Wire.endTransmission();
+ 
+ }
+ void TMD2635::writedevadr(unit8_t dev)
+ {
+   ADDRESS=dev
+ 
+ }
+ void TMD2635::NearProximity()
+ {
+     setadr(CFG6, 0x7F)  // CFG6
+     setard(PROX_CFG0, 0,45) // PROX_CFG0
+     setadr(PROX_CFG1, 0x85) //PROX_CFG1
+     
+ }
+ /** Wire.beginTransmission(0x39);
+    Wire.write(REGISTER_ADDRESS);
+    Wire.write(0x18);
+    Wire.endTransmission();
+    
+    Wire.beginTransmission(CHIP_ADDRESS);
+    Wire.write(REGISTER_ADDRESS);
+    Wire.endTransmission();
+    Wire.requestFrom(CHIP_ADDRESS, 1); // We want one byte
+    uint8_t val = Wire.read();
+    
+    
+    Wire.beginTransmission(deviceAddress);    // get the sensors attention 
+    Wire.write(registerAddress);    // move your memory pointer to registerAddress
+    Wire.endTransmission();           // completes the ‘move memory pointer’ transaction
+    Wire.requestFrom(deviceAddress, 2); // send me the data from 2 registers
+    firstRegisterByte = Wire.read();             // byte from registerAddress
+    */
 }
 
