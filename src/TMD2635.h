@@ -37,6 +37,8 @@ LICENSE:
 
 class TMD2635
 {
+  private:
+    int ADDRESS =0x39 //default for first sensor
   public:
     TMD2635();
     bool begin(uint8_t tmd2635Address = 0x39);
@@ -97,6 +99,7 @@ class TMD2635
 //    DEVREG_CFG4         =   0xAC, /**  CFG4 R/W Configuration four (must be set to 0x3D) 0x3F */
     CFG6         =   0xAE, /**  CFG6 R?W Configuration six 0x3F */
         // NP: APC = disabled by setting bit 6 = 1,
+        // 0xAE = 0x7F
 
     PFILTER      =   0xB3, /**  PFILTER */
 
