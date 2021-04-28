@@ -28,28 +28,25 @@ LICENSE:
 
 #include <Wire.h>
 #include <Arduino.h>
-
-#define SCL     4 // I2C bus
-#define SDA     5 //
-#define SCL_IN  RB4    //
-#define SDA_IN  RB1    //
  
 
 class TMD2635
 {
   private:
-    int ADDRESS =0x39 //default for first sensor
+    int ADDRESS =0x39; //default for first sensor
   public:
-    TMD2635();
-    bool begin(uint8_t tmd2635Address = 0x39);
-    bool begin(TwoWire& i2cInterface, uint8_t tmd2635Address = 0x39);
-    int readProximity();
-    bool proximityReady();
+    int  readProximity();
+    uint16_t readregadr(uint8_t reg);
+    void writeregadr(uint8_t reg,uint8_t val);
+    void NearProximity();
+    void _init_();
+    void writedevadr(uint8_t dev);
+    int Scan();
 
+    
     // register addresses
     enum regAddr
     {
-{
     /////// Specified for near proximity (NP)! ////
     
     ENABLE       =   0x80, /**  ENABLE R/W Enables states and interrupts. Reset val 0x00 */
@@ -88,7 +85,7 @@ class TMD2635
     PDATAL    =   0x9C, /**  PDATAL R Proximity ADC low data (8 bits) 0x00 */
     PDATAH     =   0x9D, /**  PDATAH R Proximity ADC high data (2 bits) 0x00 */
         //  NP: bits 1:0 contain the lower 2 bits of the 10-bit proximity value.
-    PDATA_START  =   DEVREG_PDATA_LOW,
+    //PDATA_START  =   DEVREG_PDATA_LOW,
 
     REV_ID_2     =   0xA6, /**  REVID2 R Revision ID two 0x05 */
     CFG2         =   0xA7, /**  CFG2 R/W Configuration two 0x00 */
@@ -119,14 +116,7 @@ class TMD2635
     TEST9        =   0x07, /** Must be set to this */
 
     };
-  private:
-    TwoWire* i2cInterface;
-    bool initialized;
-    uint8_t tmd2635Address;
-    bool writeByte(uint8_t cmd, uint8_t val);
-    bool readWord(uint8_t cmd, uint16_t* val);
      
 };
 
 #endif
-
