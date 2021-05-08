@@ -34,14 +34,22 @@ class TMD2635
 {
   private:
     int ADDRESS =0x39; //default for first sensor
+   
   public:
-    int  readProximity();
+    uint16_t  readProximity();
     uint16_t readregadr(uint8_t reg);
     void writeregadr(uint8_t reg,uint8_t val);
     void NearProximity();
     void _init_();
     void writedevadr(uint8_t dev);
     int Scan();
+    int sensorValue = 0;         // the sensor value
+    int sensorMin = 800;        // minimum sensor value
+    int sensorMax = 2000;
+    int distanceMin = 0;        // minimum sensor value
+    int distanceMax = 100;
+    int sensorRange();
+    
 
     
     // register addresses
