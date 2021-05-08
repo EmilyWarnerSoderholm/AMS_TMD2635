@@ -29,11 +29,28 @@ void TMD2635::_init_()
     writeregadr(SOFT_RESET,0x01);
     writeregadr(PERS, 0x0F);
     writeregadr(CFG3, 0x84);
-    //setregadr(CFG0, )
-    //setregadr(CFG0, )
+
+    
+    //writeregadr(PROX_CFG0,0x47); //01000111
+    //writeregadr(PROX_CFG1, 0x85); //10000101 ???
+    //writeregadr(PWTIME, 0x11) ;
+    //writeregadr(POFFSET_L, 0x93);
+    writeregadr(PRATE, 0x22);
+    writeregadr(PIHTL, 0xFC);
+    writeregadr(PIHTH, 0x03);
+    //writeregadr(PFILTER, 0x01);
+    //PWLONG
+    
+    
+    
+    
+    
+    
+    
+
     //if (mode==true)
     //{
-    NearProximity();
+    //NearProximity();
     //}
     //else
     //{
@@ -41,11 +58,30 @@ void TMD2635::_init_()
     //}
     writeregadr(ENABLE,0x05); //
 }
+
+int TMD2635::sensorRange()
+{
+  
+  while (millis() < 5000) {
+    sensorValue = readProximity();
+
+    // record the maximum sensor value
+    if (sensorValue > sensorMax) {
+      sensorMax = sensorValue;
+    }
+
+    // record the minimum sensor value
+    if (sensorValue < sensorMin) {
+      sensorMin = sensorValue;
+    }
+  }
+}
 int TMD2635::Scan()
 {
   byte error, address;
   int nDevices;
-  
+
+  Serial.println("Scanning...");
   nDevices = 0;
   for(address = 1; address < 127; address++ ) 
   {
@@ -63,27 +99,42 @@ int TMD2635::Scan()
         Serial.print("0");
       Serial.print(address,HEX);
       Serial.println("  !");
+
       nDevices++;
-      return address;
     }
+    else if (error==4) 
+    {
+      Serial.print("Unknow error at address 0x");
+      if (address<16) 
+        Serial.print("0");
+      Serial.println(address,HEX);
+    }    
   }
+  if (nDevices == 0)
+    Serial.println("No I2C devices found\n");
+  else
+    Serial.println("done\n");
+
+  delay(1000);           // wait 5 seconds for next scan
 }
 
-int TMD2635::readProximity()
+uint16_t TMD2635::readProximity()
 {
   uint8_t status=readregadr(STATUS);
   if (status>0)
   {
       writeregadr(ENABLE,0x05);
-      writeregadr(CFG3, 0x84);
+      writeregadr(CFG3, 0x84);// why here?
   }
   uint16_t Lreading=readregadr(PDATAL);
   uint16_t Hreading=readregadr(PDATAH); 
-    
-  uint16_t proximity = 0;
-  proximity=Hreading<<8; 
-  proximity+=Lreading;
+  //Hreading = Hreading & 0b00000011; 
+  uint16_t DATA = 0;
+  //Serial.println(Lreading,BIN);  Serial.println(Hreading, BIN);
+  DATA=Hreading<<8; 
+  DATA+=Lreading ;
   
+  int proximity = map(DATA, sensorMax, sensorMin, distanceMin, distanceMax);
   return proximity;
 } 
 
@@ -91,7 +142,7 @@ int TMD2635::readProximity()
  uint16_t TMD2635::readregadr(uint8_t reg)
  {
      Wire.beginTransmission(ADDRESS);
-     delay(5);
+     //delay(5);
      Wire.write(reg);
      delay(5);
      Wire.endTransmission();
@@ -103,11 +154,11 @@ int TMD2635::readProximity()
  void TMD2635::writeregadr(uint8_t reg, uint8_t val)
  {
    Wire.beginTransmission(ADDRESS);
-   delay(5);
+   //delay(5);
    Wire.write(reg);
-   delay(5);
+   //delay(5);
    Wire.write(val);
-   delay(5);
+   //delay(5);
    Wire.endTransmission();
  
  }
