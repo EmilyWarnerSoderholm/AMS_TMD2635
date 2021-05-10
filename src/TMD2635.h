@@ -49,6 +49,7 @@ class TMD2635
     int distanceMin = 0;        // minimum sensor value
     int distanceMax = 100;
     int sensorRange();
+    float m = 857854; float n = -1.838;
     
 
     
