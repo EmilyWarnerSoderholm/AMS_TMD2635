@@ -89,7 +89,7 @@ int TMD2635::Scan()
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
     Wire.beginTransmission(address);
-    delay(5);
+    //delay(5);
     error = Wire.endTransmission();
 
     if (error == 0)
@@ -133,9 +133,10 @@ uint16_t TMD2635::readProximity()
   //Serial.println(Lreading,BIN);  Serial.println(Hreading, BIN);
   DATA=Hreading<<8; 
   DATA+=Lreading ;
-  
-  int proximity = map(DATA, sensorMax, sensorMin, distanceMin, distanceMax);
-  return proximity;
+  float proximity = m*pow(DATA,n);
+  Serial.println(DATA);Serial.println(proximity);
+  Serial.println();
+  return DATA;
 } 
 
 
@@ -158,7 +159,7 @@ uint16_t TMD2635::readProximity()
    Wire.write(reg);
    //delay(5);
    Wire.write(val);
-   //delay(5);
+   delay(5);
    Wire.endTransmission();
  
  }
